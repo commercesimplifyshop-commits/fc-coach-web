@@ -1,0 +1,18 @@
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    // Same shape as production: the browser always calls /api on its own
+    // origin. In production Vercel rewrites it to the API project; in dev
+    // this proxies to a locally running fc-coach-api (npm run dev, port 3001).
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
+  },
+})

@@ -1,0 +1,25 @@
+name: Sync main from production
+
+# Keeps `main` as a fast-forward mirror of `production` — the default branch
+# stays a backup/reference of whatever is actually live, without ever
+# receiving direct commits itself.
+on:
+  push:
+    branches: [production]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fast-forward main to production
+        run: |
+          git fetch origin production
+          git merge --ff-only origin/production
+          git push origin main
